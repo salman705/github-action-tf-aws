@@ -8,7 +8,7 @@ resource "aws_instance" "servers" {
 
   tags = {
     Name        = "${var.server_names[count.index]}-server-${count.index + 1}"
-    Environment = "production"
+    Environment = "dev"
   }
 
 #   provisioner "remote-exec" {
