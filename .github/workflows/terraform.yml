@@ -1,33 +1,36 @@
-name: "Terraform Apply"
+name: Terraform Apply
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
-  terraform-apply:
-    name: "Terraform Apply"
+  terraform:
     runs-on: ubuntu-latest
+
     steps:
-      - name: "Setup - Checkout"
-        uses: actions/checkout@v2.1.0
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: "Setup - Build AWS Credentials"
-        run: |
-          mkdir -p ~/.aws
-          echo "[default]" > ~/.aws/credentials
-          echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
-          echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.14.9
 
-      - name: "Setup - Terraform CLI"
-        uses: hashicorp/setup-terraform@v1.0.1
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1  # Change to your desired AWS region
 
-      - name: "Run - Terraform Init"
-        run: terraform init -input=false
+    - name: Terraform Init
+      run: terraform init
 
-      - name: "Run - Terraform Plan"
-        run: terraform plan -out=tfplan -input=false
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
 
-      - name: "Run - Terraform Apply"
-        run: terraform apply -input=false -auto-approve tfplan
+    - name: Terraform Apply
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve tfplan
