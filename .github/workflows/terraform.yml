@@ -3,7 +3,7 @@ name: Terraform Apply
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   terraform:
@@ -26,10 +26,10 @@ jobs:
         aws-region: us-east-1  # Change to your desired AWS region
 
     - name: Terraform Init
-      run: terraform init
+      run: terraform init ./terraform
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan
+      run: terraform plan -out=tfplan ./terraform
 
     - name: Terraform Apply
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
