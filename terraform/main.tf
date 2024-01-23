@@ -44,7 +44,7 @@ resource "aws_instance" "servers" {
 #   }
 
   # Reference the security group IDs for SSH, HTTP, and HTTPS
-  vpc_security_group_ids = [aws_security_group.allow_ssh.id, aws_security_group.allow_http.id, aws_security_group.allow_https.id]
+  # vpc_security_group_ids = [aws_security_group.allow_ssh.id, aws_security_group.allow_http.id, aws_security_group.allow_https.id]
 }
 
 resource "aws_security_group" "allow_ssh" {
